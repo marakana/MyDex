@@ -1,0 +1,3 @@
+= MyDex
+
+MyDex is a simple AddressBook application used in Marakana Java training classes.

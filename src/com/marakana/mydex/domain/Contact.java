@@ -16,6 +16,12 @@ public class Contact {
 		this.email = email;
 	}
 
+	public Contact(String firstName, String lastName, String email) {
+		this(email);
+		this.setFirstName(firstName);
+		this.setLastName(lastName);
+	}
+
 	public String getFirstName() {
 		return this.firstName;
 	}

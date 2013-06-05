@@ -1,32 +1,76 @@
 package com.marakana.mydex.dao;
 
+import java.io.File;
+
 import com.marakana.mydex.domain.Contact;
 
-//TODO: implement!
 public class FileBasedAddressBook implements AddressBook {
+
+	private final File dir;
+	private final ContactFileResolver contactFileResolver;
+	private final ContactFileTranscoder contactFileTranscoder;
+
+	public FileBasedAddressBook(File dir) throws AddressBookException {
+		this(dir, SimpleContactFileResolver.DEFAULT_INSTANCE,
+				new SimpleContactFileTranscoder(new CompressingContactStreamTranscoder(
+						SerializingContactStreamTranscoder.DEFAULT_INSTNACE)));
+	}
+
+	public FileBasedAddressBook(File dir,
+			ContactFileResolver contactFileResolver,
+			ContactFileTranscoder contactFileTranscoder) throws AddressBookException {
+		if (dir == null) {
+			throw new NullPointerException("dir must not be null");
+		} else if (!dir.exists() && !dir.mkdirs()) {
+			throw new AddressBookException("No such directory: "
+					+ dir.getAbsolutePath());
+		} else if (!dir.isDirectory()) {
+			throw new IllegalArgumentException("Not a directory: "
+					+ dir.getAbsolutePath());
+		} else if (contactFileResolver == null) {
+			throw new NullPointerException("contactFileResolver must not be null");
+		} else if (contactFileTranscoder == null) {
+			throw new NullPointerException("contactFileTranscoder must not be null");
+		} else {
+			this.dir = dir;
+			this.contactFileResolver = contactFileResolver;
+			this.contactFileTranscoder = contactFileTranscoder;
+		}
+	}
 
 	@Override
 	public Contact getByEmail(String email) throws AddressBookException {
-		throw new UnsupportedOperationException("Implement me!");
+		File file = this.contactFileResolver.resolve(dir, email);
+		return this.contactFileTranscoder.read(file);
 	}
 
 	@Override
 	public Contact[] getAll() throws AddressBookException {
-		throw new UnsupportedOperationException("Implement me!");
+		File[] files = this.contactFileResolver.getAll(dir);
+		Contact[] contacts = new Contact[files.length];
+		for (int i = 0; i < files.length; i++) {
+			contacts[i] = this.contactFileTranscoder.read(files[i]);
+		}
+		return contacts;
 	}
 
 	@Override
 	public void store(Contact contact) throws AddressBookException {
-		throw new UnsupportedOperationException("Implement me!");
+		File file = this.contactFileResolver.resolve(dir, contact.getEmail());
+		this.contactFileTranscoder.write(contact, file);
 	}
 
 	@Override
 	public void deleteByEmail(String email) throws AddressBookException {
-		throw new UnsupportedOperationException("Implement me!");
+		File file = this.contactFileResolver.resolve(dir, email);
+		if (file.exists() && !file.delete()) {
+			throw new AddressBookException("Failed to delete contact by email ["
+					+ email + "] from file [" + file.getAbsolutePath() + "]");
+		}
 	}
 
 	@Override
 	public void close() throws AddressBookException {
-		throw new UnsupportedOperationException("Implement me!");
+		// nothing to do
 	}
 }

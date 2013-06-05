@@ -1,6 +1,7 @@
 package com.marakana.mydex.cli;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 
 import com.marakana.mydex.dao.AddressBook;
@@ -20,12 +21,14 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// TODO: Do we need to initialize our FileBasedAddressBook???
-		AddressBook addressBook = new FileBasedAddressBook();
+		if (args.length == 0) {
+			System.err.println("USAGE: Main <dir>");
+			return;
+		}
+		AddressBook addressBook = new FileBasedAddressBook(new File(args[0]));
 
 		System.out.print(PROMPT);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				System.in));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
 		while ((line = reader.readLine()) != null) {
 			if ("quit".equals(line)) {
@@ -53,10 +56,8 @@ public class Main {
 					} else if ("delete".equals(request[0])) {
 						addressBook.deleteByEmail(request[1]);
 						System.out.println("OK");
-					} else if ("store".equals(request[0])
-							&& request.length >= 4) {
-						Contact contact = new Contact(request[1], request[2],
-								request[3]);
+					} else if ("store".equals(request[0]) && request.length >= 4) {
+						Contact contact = new Contact(request[1], request[2], request[3]);
 						if (request.length >= 5) {
 							contact.setPhone(request[4]);
 						}

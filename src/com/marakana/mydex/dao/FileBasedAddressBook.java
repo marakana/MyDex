@@ -13,7 +13,7 @@ public class FileBasedAddressBook implements AddressBook {
 	public FileBasedAddressBook(File dir) throws AddressBookException {
 		this(dir, SimpleContactFileResolver.DEFAULT_INSTANCE,
 				new SimpleContactFileTranscoder(new CompressingContactStreamTranscoder(
-						SerializingContactStreamTranscoder.DEFAULT_INSTNACE)));
+						XmlContactStreamTranscoder.DEFAULT_INSTANCE)));
 	}
 
 	public FileBasedAddressBook(File dir,

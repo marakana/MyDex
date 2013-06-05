@@ -1,6 +1,11 @@
 package com.marakana.mydex.domain;
 
-public class Contact {
+import java.io.Serializable;
+
+public class Contact implements Serializable {
+
+	private static final long serialVersionUID = -8588421653547774251L;
+
 	private String firstName;
 
 	private String lastName;
@@ -12,6 +17,9 @@ public class Contact {
 	public Contact(String email) {
 		if (email == null) {
 			throw new NullPointerException("Email must not be null");
+		} else if (!email.matches("^[^@]+@[^@]+")) {
+			throw new IllegalArgumentException("Invalid email address: ["
+					+ email + "]");
 		}
 		this.email = email;
 	}

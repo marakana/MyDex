@@ -1,3 +1,14 @@
 = MyDex
 
 MyDex is a simple AddressBook application used in Marakana Java training classes.
+
+== Getting Started
+
+The _master_ branch is empty on purpose. The branches in this project correspond to various labs.
+
+. _initial_
+. _object-equality-solution_
+. _io-initial_
+. _io-solution_
+. _collections-initial_
+. _collections-solution_

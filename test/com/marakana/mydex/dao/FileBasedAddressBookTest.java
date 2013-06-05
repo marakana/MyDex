@@ -4,6 +4,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 
 import java.io.File;
+import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
@@ -71,9 +72,9 @@ public class FileBasedAddressBookTest {
 	public void testListOfOne() throws AddressBookException {
 		Contact contact = getJohnSmith();
 		this.addressBook.store(contact);
-		Contact[] contacts = this.addressBook.getAll();
-		assertEquals(1, contacts.length);
-		assertEqualsContacts(contact, contacts[0]);
+		Collection<Contact> contacts = this.addressBook.getAll();
+		assertEquals(1, contacts.size());
+		assertEqualsContacts(contact, contacts.iterator().next());
 	}
 
 	@Test
@@ -83,7 +84,7 @@ public class FileBasedAddressBookTest {
 		this.addressBook.store(contact);
 		this.addressBook.deleteByEmail(email);
 		assertNull(this.addressBook.getByEmail(email));
-		assertEquals(0, this.addressBook.getAll().length);
+		assertEquals(0, this.addressBook.getAll().size());
 	}
 
 	@Test(expected = NullPointerException.class)

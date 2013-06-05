@@ -1,5 +1,7 @@
 package com.marakana.mydex.dao;
 
+import java.util.Collection;
+
 import com.marakana.mydex.domain.Contact;
 
 public interface AddressBook {
@@ -21,11 +23,11 @@ public interface AddressBook {
 	/**
 	 * Get all contacts
 	 * 
-	 * @return all contacts
+	 * @return all contacts sorted by first name, last name, email
 	 * @throws AddressBookException
 	 *             if there is a problem getting contacts
 	 */
-	public Contact[] getAll() throws AddressBookException;
+	public Collection<Contact> getAll() throws AddressBookException;
 
 	/**
 	 * Store a contact

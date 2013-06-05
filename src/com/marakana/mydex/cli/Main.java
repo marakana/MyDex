@@ -7,10 +7,11 @@ import java.io.InputStreamReader;
 import com.marakana.mydex.dao.AddressBook;
 import com.marakana.mydex.dao.AddressBookException;
 import com.marakana.mydex.dao.FileBasedAddressBook;
+import com.marakana.mydex.dao.InMemoryAddressBook;
 import com.marakana.mydex.domain.Contact;
 
 public class Main {
-	private static final String USAGE = "Usage: Main <dir>";
+	private static final String USAGE = "Usage: Main [dir]";
 
 	private static final String PROMPT = "address-book> ";
 
@@ -24,11 +25,12 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length < 1) {
+		if (args.length > 1) {
 			System.err.println(USAGE);
 			return;
 		}
-		AddressBook addressBook = new FileBasedAddressBook(new File(args[0]));
+		AddressBook addressBook = args.length == 0 ? new InMemoryAddressBook()
+				: new FileBasedAddressBook(new File(args[0]));
 
 		System.out.print(PROMPT);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(

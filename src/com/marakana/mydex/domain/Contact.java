@@ -1,10 +1,34 @@
 package com.marakana.mydex.domain;
 
 import java.io.Serializable;
+import java.util.Comparator;
 
-public class Contact implements Serializable {
+import com.marakana.mydex.Util;
+
+public class Contact implements Serializable, Comparable<Contact> {
 
 	private static final long serialVersionUID = -8588421653547774251L;
+
+	public static final Comparator<Contact> FIRST_NAME_COMPARATOR = new Comparator<Contact>() {
+		@Override
+		public int compare(Contact c1, Contact c2) {
+			return Util.compare(c1.getFirstName(), c2.getFirstName());
+		}
+	};
+
+	public static final Comparator<Contact> LAST_NAME_COMPARATOR = new Comparator<Contact>() {
+		@Override
+		public int compare(Contact c1, Contact c2) {
+			return Util.compare(c1.getLastName(), c2.getLastName());
+		}
+	};
+
+	public static final Comparator<Contact> EMAIL_COMPARATOR = new Comparator<Contact>() {
+		@Override
+		public int compare(Contact c1, Contact c2) {
+			return c1.compareTo(c2);
+		}
+	};
 
 	private String firstName;
 
@@ -98,5 +122,10 @@ public class Contact implements Serializable {
 			out.append(' ').append(this.getPhone());
 		}
 		return out.toString();
+	}
+
+	@Override
+	public int compareTo(Contact that) {
+		return this.getEmail().compareTo(that.getEmail());
 	}
 }

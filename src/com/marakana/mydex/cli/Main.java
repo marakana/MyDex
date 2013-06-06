@@ -5,7 +5,15 @@ import java.io.File;
 import java.io.InputStreamReader;
 
 import com.marakana.mydex.dao.AddressBook;
+import com.marakana.mydex.dao.CompressingContactStreamTranscoder;
+import com.marakana.mydex.dao.ContactFileResolver;
+import com.marakana.mydex.dao.ContactFileTranscoder;
+import com.marakana.mydex.dao.ContactStreamTranscoder;
 import com.marakana.mydex.dao.FileBasedAddressBook;
+import com.marakana.mydex.dao.SerializingContactStreamTranscoder;
+import com.marakana.mydex.dao.SimpleContactFileResolver;
+import com.marakana.mydex.dao.SimpleContactFileTranscoder;
+import com.marakana.mydex.dao.XmlContactStreamTranscoder;
 import com.marakana.mydex.domain.Contact;
 
 public class Main {
@@ -21,11 +29,23 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length == 0) {
-			System.err.println("USAGE: Main <dir>");
+		if (args.length < 2) {
+			System.err.println("USAGE: Main <dir> <bin|xml> [compressed]");
 			return;
 		}
-		AddressBook addressBook = new FileBasedAddressBook(new File(args[0]));
+		File dir = new File(args[0]);
+		ContactFileResolver contactFileResolver = SimpleContactFileResolver.DEFAULT_INSTANCE;
+		ContactStreamTranscoder contactStreamTranscoder = args[1].equals("xml") ? XmlContactStreamTranscoder.DEFAULT_INSTANCE
+				: SerializingContactStreamTranscoder.DEFAULT_INSTNACE;
+		if (args.length >= 3 && args[2].equals("compressed")) {
+			contactStreamTranscoder = new CompressingContactStreamTranscoder(
+					contactStreamTranscoder);
+		}
+		ContactFileTranscoder contactFileTranscoder = new SimpleContactFileTranscoder(
+				contactStreamTranscoder);
+
+		AddressBook addressBook = new FileBasedAddressBook(dir,
+				contactFileResolver, contactFileTranscoder);
 
 		System.out.print(PROMPT);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));

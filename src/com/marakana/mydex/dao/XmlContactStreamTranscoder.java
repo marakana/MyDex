@@ -15,11 +15,22 @@ public class XmlContactStreamTranscoder implements ContactStreamTranscoder {
 
 	public static final ContactStreamTranscoder DEFAULT_INSTANCE = new XmlContactStreamTranscoder();
 
+	private static final Unmarshaller UNMARSHALLER;
+	static {
+		try {
+			JAXBContext jaxbContext = JAXBContext
+					.newInstance(ContactRepresentation.class);
+			UNMARSHALLER = jaxbContext.createUnmarshaller();
+		} catch (JAXBException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+
 	@Override
 	public void write(Contact contact, OutputStream out)
 			throws AddressBookException {
 		try {
-			JAXB.marshal(new AdaptedContact(contact), out);
+			JAXB.marshal(new ContactRepresentation(contact), out);
 		} catch (DataBindingException e) {
 			throw new AddressBookException("Failed to write [" + contact
 					+ "] to stream as xml", e);
@@ -29,11 +40,9 @@ public class XmlContactStreamTranscoder implements ContactStreamTranscoder {
 	@Override
 	public Contact read(InputStream in) throws AddressBookException {
 		try {
-			JAXBContext jaxbContext = JAXBContext.newInstance(AdaptedContact.class);
-			Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-			AdaptedContact adaptedContact = (AdaptedContact) unmarshaller
+			ContactRepresentation contactRepresentation = (ContactRepresentation) UNMARSHALLER
 					.unmarshal(in);
-			return adaptedContact.asContact();
+			return contactRepresentation.asContact();
 		} catch (JAXBException e) {
 			throw new AddressBookException(
 					"Failed to read contact from stream as xml", e);

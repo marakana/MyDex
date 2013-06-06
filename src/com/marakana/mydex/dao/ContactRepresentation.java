@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import com.marakana.mydex.domain.Contact;
 
 @XmlRootElement(name = "contact")
-public class AdaptedContact {
+public class ContactRepresentation {
 	private String firstName;
 
 	private String lastName;
@@ -14,14 +14,14 @@ public class AdaptedContact {
 
 	private String phone;
 
-	public AdaptedContact(Contact contact) {
+	public ContactRepresentation(Contact contact) {
 		this.setEmail(contact.getEmail());
 		this.setFirstName(contact.getFirstName());
 		this.setLastName(contact.getLastName());
 		this.setPhone(contact.getPhone());
 	}
 
-	public AdaptedContact() {
+	public ContactRepresentation() {
 
 	}
 

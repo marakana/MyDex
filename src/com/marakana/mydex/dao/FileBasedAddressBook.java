@@ -20,7 +20,7 @@ public class FileBasedAddressBook implements AddressBook {
 			ContactFileResolver contactFileResolver,
 			ContactFileTranscoder contactFileTranscoder) throws AddressBookException {
 		if (dir == null) {
-			throw new NullPointerException("dir must not be null");
+			throw new NullPointerException("Dir must not be null");
 		} else if (!dir.exists() && !dir.mkdirs()) {
 			throw new AddressBookException("No such directory: "
 					+ dir.getAbsolutePath());
@@ -28,9 +28,9 @@ public class FileBasedAddressBook implements AddressBook {
 			throw new IllegalArgumentException("Not a directory: "
 					+ dir.getAbsolutePath());
 		} else if (contactFileResolver == null) {
-			throw new NullPointerException("contactFileResolver must not be null");
+			throw new NullPointerException("ContactFileResolver must not be null");
 		} else if (contactFileTranscoder == null) {
-			throw new NullPointerException("contactFileTranscoder must not be null");
+			throw new NullPointerException("ContactFileTranscoder must not be null");
 		} else {
 			this.dir = dir;
 			this.contactFileResolver = contactFileResolver;

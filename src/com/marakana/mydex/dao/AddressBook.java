@@ -10,13 +10,13 @@ public interface AddressBook {
 	 * Get contact by email.
 	 * 
 	 * @param email
-	 *            the email of the contact to get
+	 *          the email of the contact to get
 	 * @return the contact with the specified email or null if no such contact
 	 *         exists.
 	 * @throws AddressBookException
-	 *             if there is a problem getting this contact.
+	 *           if there is a problem getting this contact.
 	 * @throws NullPointerException
-	 *             if email is null
+	 *           if email is null
 	 */
 	public Contact getByEmail(String email) throws AddressBookException;
 
@@ -25,7 +25,7 @@ public interface AddressBook {
 	 * 
 	 * @return all contacts sorted by first name, last name, email
 	 * @throws AddressBookException
-	 *             if there is a problem getting contacts
+	 *           if there is a problem getting contacts
 	 */
 	public Collection<Contact> getAll() throws AddressBookException;
 
@@ -33,11 +33,11 @@ public interface AddressBook {
 	 * Store a contact
 	 * 
 	 * @param contact
-	 *            the contact to store
+	 *          the contact to store
 	 * @throws AddressBookException
-	 *             if there is a problem storing this contact
+	 *           if there is a problem storing this contact
 	 * @throws NullPointerException
-	 *             if contact is null
+	 *           if contact is null
 	 */
 	public void store(Contact contact) throws AddressBookException;
 
@@ -46,11 +46,11 @@ public interface AddressBook {
 	 * nothing.
 	 * 
 	 * @param email
-	 *            the email of the contact to delete
+	 *          the email of the contact to delete
 	 * @throws AddressBookException
-	 *             if there is a problem deleting this contact.
+	 *           if there is a problem deleting this contact.
 	 * @throws NullPointerException
-	 *             if email is null
+	 *           if email is null
 	 */
 	public void deleteByEmail(String email) throws AddressBookException;
 
@@ -58,7 +58,7 @@ public interface AddressBook {
 	 * Closes this address book, indicating that it is no longer needed.
 	 * 
 	 * @throws AddressBookException
-	 *             if there is a problem closing this address book.
+	 *           if there is a problem closing this address book.
 	 */
 	public void close() throws AddressBookException;
 }

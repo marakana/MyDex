@@ -1,8 +1,10 @@
 package com.marakana.mydex.domain;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Comparator;
 
+import com.marakana.mydex.CombinedComparator;
 import com.marakana.mydex.Util;
 
 public class Contact implements Serializable, Comparable<Contact> {
@@ -30,6 +32,10 @@ public class Contact implements Serializable, Comparable<Contact> {
 		}
 	};
 
+	public static final Comparator<Contact> FIRST_NAME_LAST_NAME_EMAIL_COMPARATOR = new CombinedComparator<>(
+			Arrays.asList(FIRST_NAME_COMPARATOR, LAST_NAME_COMPARATOR,
+					EMAIL_COMPARATOR));
+
 	private String firstName;
 
 	private String lastName;
@@ -42,8 +48,8 @@ public class Contact implements Serializable, Comparable<Contact> {
 		if (email == null) {
 			throw new NullPointerException("Email must not be null");
 		} else if (!email.matches("^[^@]+@[^@]+")) {
-			throw new IllegalArgumentException("Invalid email address: ["
-					+ email + "]");
+			throw new IllegalArgumentException("Invalid email address: [" + email
+					+ "]");
 		}
 		this.email = email;
 	}

@@ -23,7 +23,7 @@ public class FileBasedAddressBookFactory implements AddressBookFactory {
 	private File dir;
 	private ContactFileResolver contactFileResolver;
 	private StreamType streamType;
-	private boolean compression;
+	private boolean compression = true;
 
 	@Required
 	public void setDir(String dir) {
@@ -40,7 +40,6 @@ public class FileBasedAddressBookFactory implements AddressBookFactory {
 		this.streamType = StreamType.valueOf(streamType);
 	}
 
-	@Default("true")
 	public void setCompression(String compression) {
 		this.compression = Boolean.valueOf(compression).booleanValue();
 	}

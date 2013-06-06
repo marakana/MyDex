@@ -3,6 +3,8 @@ package com.marakana.mydex.domain;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.marakana.mydex.CombinedComparator;
 import com.marakana.mydex.Util;
@@ -10,6 +12,19 @@ import com.marakana.mydex.Util;
 public class Contact implements Serializable, Comparable<Contact> {
 
 	private static final long serialVersionUID = -8588421653547774251L;
+
+	private static final Pattern PARSE_PATTERN = Pattern
+			.compile("(?:([^ ]+) )?(?:([^ ]+) )?<([^> ]+)>(?: \\(([^ ]+)\\))?");
+
+	public static Contact parse(String in) {
+		Matcher m = PARSE_PATTERN.matcher(in);
+		if (m.matches()) {
+			return new ContactBuilder(m.group(3)).withFirstName(m.group(1))
+					.withLastName(m.group(2)).withPhone(m.group(4)).build();
+		} else {
+			throw new IllegalArgumentException("Invalid input string: " + in);
+		}
+	}
 
 	public static final Comparator<Contact> FIRST_NAME_COMPARATOR = new Comparator<Contact>() {
 		@Override
@@ -125,7 +140,7 @@ public class Contact implements Serializable, Comparable<Contact> {
 		}
 		out.append('<').append(this.getEmail()).append('>');
 		if (this.getPhone() != null) {
-			out.append(' ').append(this.getPhone());
+			out.append(" (").append(this.getPhone()).append(")");
 		}
 		return out.toString();
 	}

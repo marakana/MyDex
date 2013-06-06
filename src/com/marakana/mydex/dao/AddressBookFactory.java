@@ -10,7 +10,9 @@ import java.util.regex.Pattern;
 /**
  * Creates address books. Dependencies are resolved using setter methods. That
  * means, that if you want "foo", create a setter method called
- * "public void setFoo(String foo)"
+ * "public void setFoo(String foo)".
+ * 
+ * The factories must have a no-arg constructor.
  * 
  * This is something that we should almost never do. Frameworks (such as Spring)
  * already exist that do a much better job at resolving dependencies than what
@@ -22,20 +24,18 @@ public interface AddressBookFactory {
 
 		private static final Pattern PROP_PATTERN = Pattern.compile("([^=]+)=(.+)");
 
-		private final Class<AddressBookFactory> clazz;
-
 		private final AddressBookFactory addressBookFactory;
 
-		private Map<String, Method> setters = new HashMap<String, Method>();
+		private Map<String, Method> setters = new HashMap<>();
 
-		@SuppressWarnings("unchecked")
 		public Builder(String addressBookFactoryType) throws AddressBookException {
 			try {
-				this.clazz = (Class<AddressBookFactory>) Class
+				@SuppressWarnings("unchecked")
+				Class<AddressBookFactory> clazz = (Class<AddressBookFactory>) Class
 						.forName(addressBookFactoryType);
-				this.addressBookFactory = this.clazz.newInstance();
+				this.addressBookFactory = clazz.newInstance();
 
-				for (Method method : clazz.getDeclaredMethods()) {
+				for (Method method : clazz.getMethods()) {
 					String name = method.getName();
 					if (name.startsWith("set") && method.getParameterTypes().length == 1
 							&& method.getParameterTypes()[0] == String.class

@@ -1,23 +1,15 @@
 package com.marakana.mydex.cli;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 
 import com.marakana.mydex.dao.AddressBook;
-import com.marakana.mydex.dao.CompressingContactStreamTranscoder;
-import com.marakana.mydex.dao.ContactFileResolver;
-import com.marakana.mydex.dao.ContactFileTranscoder;
-import com.marakana.mydex.dao.ContactStreamTranscoder;
-import com.marakana.mydex.dao.FileBasedAddressBook;
-import com.marakana.mydex.dao.InMemoryAddressBook;
-import com.marakana.mydex.dao.SerializingContactStreamTranscoder;
-import com.marakana.mydex.dao.SimpleContactFileResolver;
-import com.marakana.mydex.dao.SimpleContactFileTranscoder;
-import com.marakana.mydex.dao.XmlContactStreamTranscoder;
+import com.marakana.mydex.dao.AddressBookFactory;
 import com.marakana.mydex.domain.Contact;
 
 public class Main {
+	private static final String USAGE = "Usage: Main <address-book-factory-class> <prop-name>=<prop-value>";
+
 	private static final String PROMPT = "address-book> ";
 
 	private static final String HELP = "Usage: quit|help|list|get <email>|delete <email>|store <first-name> <last-name> <email> [phone]";
@@ -30,28 +22,23 @@ public class Main {
 	}
 
 	public static void main(String[] args) throws Exception {
-		if (args.length > 3) {
-			System.err.println("USAGE: Main [<dir> <bin|xml> [compressed]]");
+		if (args.length < 1) {
+			System.err.println(USAGE);
 			return;
 		}
-		final AddressBook addressBook;
-		if (args.length == 0) {
-			addressBook = new InMemoryAddressBook();
-		} else {
-			File dir = new File(args[0]);
-			ContactFileResolver contactFileResolver = SimpleContactFileResolver.DEFAULT_INSTANCE;
-			ContactStreamTranscoder contactStreamTranscoder = args[1].equals("xml") ? XmlContactStreamTranscoder.DEFAULT_INSTANCE
-					: SerializingContactStreamTranscoder.DEFAULT_INSTNACE;
-			if (args.length >= 3 && args[2].equals("compressed")) {
-				contactStreamTranscoder = new CompressingContactStreamTranscoder(
-						contactStreamTranscoder);
-			}
-			ContactFileTranscoder contactFileTranscoder = new SimpleContactFileTranscoder(
-					contactStreamTranscoder);
 
-			addressBook = new FileBasedAddressBook(dir, contactFileResolver,
-					contactFileTranscoder);
+		AddressBookFactory.Builder builder = new AddressBookFactory.Builder(args[0]);
+		for (int i = 1; i < args.length; i++) {
+			try {
+				builder.setProperty(args[i]);
+			} catch (IllegalArgumentException e) {
+				System.err.println("ERROR: " + e.getMessage());
+				System.err.println(USAGE);
+				return;
+			}
 		}
+		AddressBook addressBook = builder.getAddressBookFactory().getAddressBook();
+
 		System.out.print(PROMPT);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;

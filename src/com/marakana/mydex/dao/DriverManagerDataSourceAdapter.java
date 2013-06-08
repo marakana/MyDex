@@ -17,10 +17,25 @@ public class DriverManagerDataSourceAdapter implements DataSource {
 
 	public DriverManagerDataSourceAdapter(String driver, String url,
 			String username, String password) throws ClassNotFoundException {
-		Class.forName(driver);
-		this.url = url;
+		this(url, username, password);
+		if (driver != null) {
+			Class.forName(driver);
+		}
+	}
+
+	public DriverManagerDataSourceAdapter(String url, String username,
+			String password) {
+		if (url == null) {
+			throw new NullPointerException("URL must not be null");
+		} else {
+			this.url = url;
+		}
 		this.username = username;
 		this.password = password;
+	}
+
+	public DriverManagerDataSourceAdapter(String url) {
+		this(url, null, null);
 	}
 
 	@Override

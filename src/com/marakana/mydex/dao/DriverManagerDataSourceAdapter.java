@@ -12,9 +12,15 @@ import javax.sql.DataSource;
 public class DriverManagerDataSourceAdapter implements DataSource {
 
 	private final String url;
+	private final String username;
+	private final String password;
 
-	public DriverManagerDataSourceAdapter(String url) {
+	public DriverManagerDataSourceAdapter(String driver, String url,
+			String username, String password) throws ClassNotFoundException {
+		Class.forName(driver);
 		this.url = url;
+		this.username = username;
+		this.password = password;
 	}
 
 	@Override
@@ -54,7 +60,12 @@ public class DriverManagerDataSourceAdapter implements DataSource {
 
 	@Override
 	public Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(this.url);
+		if (this.username == null || this.password == null) {
+			return DriverManager.getConnection(this.url);
+		} else {
+			return DriverManager
+					.getConnection(this.url, this.username, this.password);
+		}
 	}
 
 	@Override
